@@ -8,7 +8,7 @@ const SignUp = () => {
   const [password, , setPassword] = useInput('');
   const [passwordCheck, , setPasswordCheck] = useInput('');
   const [mismatchError, setMismatchError] = useState(false);
-  const [signUpError, setSignUpError] = useState(false);
+  const [signUpError, setSignUpError] = useState('');
   const [signUpSuccess, setSignUpSuccess] = useState(false);
 
   const onChangePassword = useCallback(
@@ -28,18 +28,22 @@ const SignUp = () => {
   const onSubmit = useCallback(
     (e) => {
       e.preventDefault();
-      if (!mismatchError) {
+      if (!mismatchError && nickname) {
+        setSignUpError('');
+        setSignUpSuccess(false);
         axios
-          .post('https://localhost:3095/api/users', {
+          .post('http://localhost:3095/api/users', {
             email,
             nickname,
             password,
           })
           .then((response) => {
             console.log(response);
+            setSignUpSuccess(true);
           })
           .catch((error) => {
             console.log(error);
+            setSignUpError(error.response.data);
           })
           .finally(() => {});
       }
@@ -82,6 +86,9 @@ const SignUp = () => {
             />
           </div>
           {mismatchError && <Error>비밀번호가 일치하지 않습니다.</Error>}
+          {!nickname && <Error>닉네임을 입력해주세요.</Error>}
+          {signUpError && <Error>{signUpError}</Error>}
+          {signUpSuccess && <Success>회원가입이 완료됐습니다! 로그인해주세요.</Success>}
         </Label>
         <Button type="submit">회원가입</Button>
       </Form>
