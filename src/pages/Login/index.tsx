@@ -2,16 +2,31 @@ import React, { useCallback, useState } from 'react';
 import useInput from 'hooks/useInput';
 import { Button, Error, Form, Header, Input, Label, LinkContainer } from 'pages/SignUp/styles';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const LogIn = () => {
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
   const [logInError, setLogInError] = useState(false);
 
-  const onSubmit = useCallback((e) => {
-    e.preventDefault();
-    setLogInError(false);
-  }, []);
+  const onSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      setLogInError(false);
+      axios
+        .post('/users/login', {
+          email,
+          password,
+        })
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.log(error.response.data);
+        });
+    },
+    [email, password],
+  );
 
   return (
     <div id="container">
