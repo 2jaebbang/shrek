@@ -44,7 +44,11 @@ const Workspace: FC = ({ children }) => {
         <RightMenu />
         <span onClick={onClickUserProfile}>
           <ProfileImg src={gravatar.url(data.email, { s: '28px', d: 'retro' })} alt={data.email} />
-          {showUserMenu && <Menu>프로필메뉴</Menu>}
+          {showUserMenu && (
+            <Menu style={{ right: 0, top: 38 }} show={showUserMenu} onCloseModal={onClickUserProfile}>
+              프로필메뉴
+            </Menu>
+          )}
         </span>
       </Header>
       <button onClick={onLogout}>로그아웃</button>
