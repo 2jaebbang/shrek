@@ -4,6 +4,7 @@ import { Navigate, Route, Routes } from 'react-router';
 import useSWR from 'swr';
 import fetcher from 'utils/fetcher';
 import {
+  AddButton,
   Channels,
   Chats,
   Header,
@@ -12,6 +13,7 @@ import {
   ProfileImg,
   ProfileModal,
   RightMenu,
+  WorkspaceButton,
   WorkspaceName,
   Workspaces,
   WorkspaceWrapper,
@@ -19,13 +21,18 @@ import {
 import gravatar from 'gravatar';
 import loadable from '@loadable/component';
 import Menu from 'components/Menu';
+import { IUser } from 'types/db';
 
 const Channel = loadable(() => import('pages/Channel'));
 const DirectMessage = loadable(() => import('pages/DirectMessage'));
 
 const Workspace: FC = ({ children }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const { data, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher, { dedupingInterval: 10000 });
+  const {
+    data: userData,
+    error,
+    mutate,
+  } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher, { dedupingInterval: 10000 });
   const onLogout = useCallback(() => {
     axios.post('http://localhost:3095/api/users/logout', null, { withCredentials: true }).then(() => {
       mutate(false, false);
