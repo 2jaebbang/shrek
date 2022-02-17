@@ -16,6 +16,7 @@ import {
 } from './styles';
 import gravatar from 'gravatar';
 import loadable from '@loadable/component';
+import Menu from 'components/Menu';
 
 const Channel = loadable(() => import('pages/Channel'));
 const DirectMessage = loadable(() => import('pages/DirectMessage'));
@@ -38,6 +39,7 @@ const Workspace: FC = ({ children }) => {
         <RightMenu />
         <span>
           <ProfileImg src={gravatar.url(data.email, { s: '28px', d: 'retro' })} alt={data.email} />
+          <Menu>프로필메뉴</Menu>
         </span>
       </Header>
       <button onClick={onLogout}>로그아웃</button>
