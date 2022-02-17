@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { FC, useCallback } from 'react';
-import { Navigate } from 'react-router';
+import { Navigate, Route, Routes } from 'react-router';
 import useSWR from 'swr';
 import fetcher from 'utils/fetcher';
 import {
@@ -15,6 +15,10 @@ import {
   WorkspaceWrapper,
 } from './styles';
 import gravatar from 'gravatar';
+import loadable from '@loadable/component';
+
+const Channel = loadable(() => import('pages/Channel'));
+const DirectMessage = loadable(() => import('pages/DirectMessage'));
 
 const Workspace: FC = ({ children }) => {
   const { data, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher, { dedupingInterval: 10000 });
@@ -43,9 +47,13 @@ const Workspace: FC = ({ children }) => {
           <WorkspaceName>Shrek</WorkspaceName>
           <MenuScroll>MenuScorll</MenuScroll>
         </Channels>
-        <Chats>Chats</Chats>
+        <Chats>
+          <Routes>
+            <Route path="/channel" element={<Channel />}></Route>
+            <Route path="/dm/:id" element={<DirectMessage />}></Route>
+          </Routes>
+        </Chats>
       </WorkspaceWrapper>
-      {children}
     </div>
   );
 };
