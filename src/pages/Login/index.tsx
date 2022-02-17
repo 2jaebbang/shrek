@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import useInput from 'hooks/useInput';
 import { Button, Error, Form, Header, Input, Label, LinkContainer } from 'pages/SignUp/styles';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import useSWR from 'swr';
 import fetcher from 'utils/fetcher';
@@ -34,6 +34,11 @@ const LogIn = () => {
     },
     [email, password],
   );
+
+  //데이터가 있을경우 (로그인했을 경우) workspace/channel로 이동
+  if (data) {
+    return <Navigate replace to="/workspace/channel" />;
+  }
 
   return (
     <div id="container">
