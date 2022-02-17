@@ -42,8 +42,12 @@ const Workspace: FC = ({ children }) => {
     <div>
       <Header>
         <RightMenu />
-        <span onClick={onClickUserProfile}>
-          <ProfileImg src={gravatar.url(data.email, { s: '28px', d: 'retro' })} alt={data.email} />
+        <span>
+          <ProfileImg
+            onClick={onClickUserProfile}
+            src={gravatar.url(data.email, { s: '28px', d: 'retro' })}
+            alt={data.email}
+          />
           {showUserMenu && (
             <Menu style={{ right: 0, top: 38 }} show={showUserMenu} onCloseModal={onClickUserProfile}>
               프로필메뉴

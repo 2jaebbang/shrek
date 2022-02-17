@@ -21,3 +21,13 @@ export const CreateMenu = styled.div`
     color: rgb(29, 28, 29);
   }
 `;
+
+export const CloseModalButton = styled.button`
+  position: absolute;
+  right: 10px;
+  top: 6px;
+  background: transparent;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+`;
