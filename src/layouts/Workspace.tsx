@@ -11,6 +11,7 @@ const Workspace: FC = ({ children }) => {
   return (
     <div>
       <button onClick={onLogout}>로그아웃</button>
+      {children}
     </div>
   );
 };
