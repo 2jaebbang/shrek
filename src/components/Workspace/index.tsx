@@ -21,6 +21,7 @@ import {
 import gravatar from 'gravatar';
 import loadable from '@loadable/component';
 import Menu from 'components/Menu';
+import { Link } from 'react-router-dom';
 import { IUser } from 'types/db';
 
 const Channel = loadable(() => import('pages/Channel'));
@@ -43,8 +44,10 @@ const Workspace: FC = ({ children }) => {
     setShowUserMenu((prev) => !prev);
   }, []);
 
+  const onClickCreateWorkspace = useCallback(() => {}, []);
+
   //데이터가 없을경우 /login으로 이동
-  if (!data) {
+  if (!userData) {
     return <Navigate replace to="/login" />;
   }
   return (
@@ -54,15 +57,15 @@ const Workspace: FC = ({ children }) => {
         <span>
           <ProfileImg
             onClick={onClickUserProfile}
-            src={gravatar.url(data.email, { s: '28px', d: 'retro' })}
-            alt={data.email}
+            src={gravatar.url(userData.email, { s: '28px', d: 'retro' })}
+            alt={userData.email}
           />
           {showUserMenu && (
             <Menu style={{ right: 0, top: 38 }} show={showUserMenu} onCloseModal={onClickUserProfile}>
               <ProfileModal>
-                <img src={gravatar.url(data.email, { s: '28px', d: 'retro' })} alt={data.nickname} />
+                <img src={gravatar.url(userData.email, { s: '28px', d: 'retro' })} alt={userData.nickname} />
                 <div>
-                  <span id="profile-name">{data.nickname}</span>
+                  <span id="profile-name">{userData.nickname}</span>
                   <span id="profile-active">Active</span>
                 </div>
               </ProfileModal>
@@ -72,7 +75,16 @@ const Workspace: FC = ({ children }) => {
         </span>
       </Header>
       <WorkspaceWrapper>
-        <Workspaces>test</Workspaces>
+        <Workspaces>
+          {userData?.Workspaces.map((ws) => {
+            return (
+              <Link key={ws.id} to={`/workspace/${123}/channel/일반`}>
+                <WorkspaceButton>{ws.name.slice(0, 1).toUpperCase()}</WorkspaceButton>
+              </Link>
+            );
+          })}
+          <AddButton onClick={onClickCreateWorkspace}>+</AddButton>
+        </Workspaces>
         <Channels>
           <WorkspaceName>Shrek</WorkspaceName>
           <MenuScroll>MenuScorll</MenuScroll>
