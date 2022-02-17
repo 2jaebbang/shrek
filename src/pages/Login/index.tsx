@@ -10,7 +10,7 @@ const LogIn = () => {
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
   const [logInError, setLogInError] = useState(false);
-  const { data, error } = useSWR('http://localhost:3095/api/users', fetcher);
+  const { data, error, revalidate } = useSWR('http://localhost:3095/api/users', fetcher, { dedupingInterval: 10000 });
 
   const onSubmit = useCallback(
     (e) => {
@@ -26,7 +26,7 @@ const LogIn = () => {
           { withCredentials: true },
         )
         .then((response) => {
-          console.log(response.data);
+          revalidate();
         })
         .catch((error) => {
           console.log(error.response.data);
