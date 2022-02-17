@@ -35,6 +35,10 @@ const LogIn = () => {
     [email, password],
   );
 
+  if (data === undefined) {
+    return <div>로딩 중...</div>;
+  }
+
   //데이터가 있을경우 (로그인했을 경우) workspace/channel로 이동
   if (data) {
     return <Navigate replace to="/workspace/channel" />;
