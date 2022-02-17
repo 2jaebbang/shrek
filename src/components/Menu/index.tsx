@@ -10,8 +10,4 @@ const Menu: FC = ({ children }) => {
   );
 };
 
-Menu.defaultProps = {
-  closeButton: true,
-};
-
 export default Menu;

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 import useSWR from 'swr';
 import fetcher from 'utils/fetcher';
@@ -22,11 +22,16 @@ const Channel = loadable(() => import('pages/Channel'));
 const DirectMessage = loadable(() => import('pages/DirectMessage'));
 
 const Workspace: FC = ({ children }) => {
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const { data, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher, { dedupingInterval: 10000 });
   const onLogout = useCallback(() => {
     axios.post('http://localhost:3095/api/users/logout', null, { withCredentials: true }).then(() => {
       mutate(false, false);
     });
+  }, []);
+
+  const onClickUserProfile = useCallback(() => {
+    setShowUserMenu((prev) => !prev);
   }, []);
 
   //데이터가 없을경우 /login으로 이동
@@ -37,9 +42,9 @@ const Workspace: FC = ({ children }) => {
     <div>
       <Header>
         <RightMenu />
-        <span>
+        <span onClick={onClickUserProfile}>
           <ProfileImg src={gravatar.url(data.email, { s: '28px', d: 'retro' })} alt={data.email} />
-          <Menu>프로필메뉴</Menu>
+          {showUserMenu && <Menu>프로필메뉴</Menu>}
         </span>
       </Header>
       <button onClick={onLogout}>로그아웃</button>
