@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import useInput from 'hooks/useInput';
 import { Button, Error, Form, Header, Input, Label, LinkContainer } from 'pages/SignUp/styles';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import useSWR from 'swr';
 import fetcher from 'utils/fetcher';
@@ -10,7 +10,7 @@ const LogIn = () => {
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
   const [logInError, setLogInError] = useState(false);
-  const { data, error, revalidate } = useSWR('http://localhost:3095/api/users', fetcher, { dedupingInterval: 10000 });
+  const { data, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher, { dedupingInterval: 10000 });
 
   const onSubmit = useCallback(
     (e) => {
@@ -26,7 +26,7 @@ const LogIn = () => {
           { withCredentials: true },
         )
         .then((response) => {
-          revalidate();
+          mutate(response.data, false);
         })
         .catch((error) => {
           console.log(error.response.data);
@@ -34,6 +34,15 @@ const LogIn = () => {
     },
     [email, password],
   );
+
+  if (data === undefined) {
+    return <div>로딩 중...</div>;
+  }
+
+  //데이터가 있을경우 (로그인했을 경우) workspace/channel로 이동
+  if (data) {
+    return <Navigate replace to="/workspace/channel" />;
+  }
 
   return (
     <div id="container">
