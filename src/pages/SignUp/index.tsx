@@ -2,8 +2,12 @@ import React, { useCallback, useState } from 'react';
 import { Button, Error, Form, Header, Input, Label, LinkContainer, Success } from 'pages/SignUp/styles';
 import useInput from 'hooks/useInput';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
+import useSWR from 'swr';
+import fetcher from 'utils/fetcher';
 const SignUp = () => {
+  const { data, error, revalidate } = useSWR('http://localhost:3095/api/users', fetcher, { dedupingInterval: 10000 });
+
   const [email, onChangeEmail, setEmail] = useInput('');
   const [nickname, onChangeNickname, setNickname] = useInput('');
   const [password, , setPassword] = useInput('');
@@ -52,6 +56,11 @@ const SignUp = () => {
     },
     [email, nickname, password, passwordCheck, mismatchError],
   );
+
+  //데이터가 있을경우 (로그인했을 경우) workspace/channel로 이동
+  if (data) {
+    return <Navigate replace to="/workspace/channel" />;
+  }
 
   return (
     <div id="container">
