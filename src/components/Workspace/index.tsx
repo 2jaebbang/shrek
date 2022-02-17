@@ -7,8 +7,10 @@ import {
   Channels,
   Chats,
   Header,
+  LogOutButton,
   MenuScroll,
   ProfileImg,
+  ProfileModal,
   RightMenu,
   WorkspaceName,
   Workspaces,
@@ -50,12 +52,18 @@ const Workspace: FC = ({ children }) => {
           />
           {showUserMenu && (
             <Menu style={{ right: 0, top: 38 }} show={showUserMenu} onCloseModal={onClickUserProfile}>
-              프로필메뉴
+              <ProfileModal>
+                <img src={gravatar.url(data.email, { s: '28px', d: 'retro' })} alt={data.nickname} />
+                <div>
+                  <span id="profile-name">{data.nickname}</span>
+                  <span id="profile-active">Active</span>
+                </div>
+              </ProfileModal>
+              <LogOutButton onClick={onLogout}>로그아웃</LogOutButton>
             </Menu>
           )}
         </span>
       </Header>
-      <button onClick={onLogout}>로그아웃</button>
       <WorkspaceWrapper>
         <Workspaces>test</Workspaces>
         <Channels>
