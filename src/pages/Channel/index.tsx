@@ -1,4 +1,4 @@
-import Workspace from 'layouts/Workspace';
+import Workspace from 'components/Workspace';
 import React from 'react';
 
 const Channel = () => {
