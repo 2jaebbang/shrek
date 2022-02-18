@@ -23,12 +23,19 @@ import loadable from '@loadable/component';
 import Menu from 'components/Menu';
 import { Link } from 'react-router-dom';
 import { IUser } from 'types/db';
+import Modal from 'components/Modal';
+import { Button, Input, Label } from 'pages/SignUp/styles';
+import useInput from 'hooks/useInput';
 
 const Channel = loadable(() => import('pages/Channel'));
 const DirectMessage = loadable(() => import('pages/DirectMessage'));
 
 const Workspace: FC = ({ children }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showCreateWorkspaceModal, setShowCreateWorkspaceModal] = useState(false);
+  const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput('');
+  const [newUrl, onChangeNewUrl, setNewUrl] = useInput('');
+
   const {
     data: userData,
     error,
@@ -40,11 +47,23 @@ const Workspace: FC = ({ children }) => {
     });
   }, []);
 
+  //유저프로필버튼
   const onClickUserProfile = useCallback(() => {
     setShowUserMenu((prev) => !prev);
   }, []);
 
-  const onClickCreateWorkspace = useCallback(() => {}, []);
+  //워크스페이스 생성버튼
+  const onClickCreateWorkspace = useCallback(() => {
+    setShowCreateWorkspaceModal(true);
+  }, []);
+
+  //워크스페이스 생성
+  const onCreateWorkspace = useCallback(() => {}, []);
+
+  //모달창 닫기
+  const onCloseModal = useCallback(() => {
+    setShowCreateWorkspaceModal(false);
+  }, []);
 
   //데이터가 없을경우 /login으로 이동
   if (!userData) {
@@ -96,6 +115,19 @@ const Workspace: FC = ({ children }) => {
           </Routes>
         </Chats>
       </WorkspaceWrapper>
+      <Modal show={showCreateWorkspaceModal} onCloseModal={onCloseModal}>
+        <form onSubmit={onCreateWorkspace}>
+          <Label id="workspace-label">
+            <span>워크스페이스 이름</span>
+            <Input id="workspace" value={newWorkspace} onChange={onChangeNewWorkspace} />
+          </Label>
+          <Label id="workspace-url-label">
+            <span>워크스페이스 url</span>
+            <Input id="workspace-url" value={newUrl} onChange={onChangeNewUrl} />
+          </Label>
+          <Button type="submit">생성하기</Button>
+        </form>
+      </Modal>
     </div>
   );
 };
