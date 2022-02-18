@@ -16,6 +16,7 @@ import {
   ProfileModal,
   RightMenu,
   WorkspaceButton,
+  WorkspaceModal,
   WorkspaceName,
   Workspaces,
   WorkspaceWrapper,
@@ -28,6 +29,7 @@ import { IUser } from 'types/db';
 import Modal from 'components/Modal';
 import { Button, Input, Label } from 'pages/SignUp/styles';
 import useInput from 'hooks/useInput';
+import CreateChannelModal from 'components/CreateChannelModal';
 
 const Channel = loadable(() => import('pages/Channel'));
 const DirectMessage = loadable(() => import('pages/DirectMessage'));
@@ -37,6 +39,8 @@ const Workspace: VFC = () => {
   const [showCreateWorkspaceModal, setShowCreateWorkspaceModal] = useState(false);
   const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput('');
   const [newUrl, onChangeNewUrl, setNewUrl] = useInput('');
+  const [showWorkspaceModal, setShowWorkspaceModal] = useState(false);
+  const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
 
   const {
     data: userData,
@@ -101,6 +105,16 @@ const Workspace: VFC = () => {
   //모달창 닫기
   const onCloseModal = useCallback(() => {
     setShowCreateWorkspaceModal(false);
+    setShowCreateChannelModal(false);
+  }, []);
+
+  const toggleWorkspaceModal = useCallback(() => {
+    setShowWorkspaceModal((prev) => !prev);
+  }, []);
+
+  //채널 생성
+  const onClickAddChannel = useCallback(() => {
+    setShowCreateChannelModal(true);
   }, []);
 
   //데이터가 없을경우 /login으로 이동
@@ -143,8 +157,18 @@ const Workspace: VFC = () => {
           <AddButton onClick={onClickCreateWorkspace}>+</AddButton>
         </Workspaces>
         <Channels>
-          <WorkspaceName>Shrek</WorkspaceName>
-          <MenuScroll>MenuScorll</MenuScroll>
+          <WorkspaceName onClick={toggleWorkspaceModal}>Shrek</WorkspaceName>
+          <MenuScroll>
+            {showWorkspaceModal && (
+              <Menu show={showWorkspaceModal} onCloseModal={toggleWorkspaceModal} style={{ top: 95, left: 80 }}>
+                <WorkspaceModal>
+                  <h2>Shrek</h2>
+                  <button onClick={onClickAddChannel}>채널 만들기</button>
+                  <button onClick={onLogout}>로그아웃</button>
+                </WorkspaceModal>
+              </Menu>
+            )}
+          </MenuScroll>
         </Channels>
         <Chats>
           <Routes>
@@ -166,6 +190,11 @@ const Workspace: VFC = () => {
           <Button type="submit">생성하기</Button>
         </form>
       </Modal>
+      <CreateChannelModal
+        show={showCreateChannelModal}
+        onCloseModal={onCloseModal}
+        setShowCreateChannelModal={setShowCreateChannelModal}
+      ></CreateChannelModal>
     </div>
   );
 };
