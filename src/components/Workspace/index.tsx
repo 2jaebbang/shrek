@@ -1,6 +1,8 @@
 import axios from 'axios';
 import React, { FC, useCallback, useState } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import useSWR from 'swr';
 import fetcher from 'utils/fetcher';
 import {
@@ -39,8 +41,10 @@ const Workspace: FC = ({ children }) => {
   const {
     data: userData,
     error,
+    revalidate,
     mutate,
-  } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher, { dedupingInterval: 10000 });
+  } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher, { dedupingInterval: 2000 });
+
   const onLogout = useCallback(() => {
     axios.post('http://localhost:3095/api/users/logout', null, { withCredentials: true }).then(() => {
       mutate(false, false);
@@ -58,7 +62,41 @@ const Workspace: FC = ({ children }) => {
   }, []);
 
   //워크스페이스 생성
-  const onCreateWorkspace = useCallback(() => {}, []);
+  const onCreateWorkspace = useCallback(
+    async (e) => {
+      e.preventDefault();
+
+      //워크스페이스 생성 폼 필수값 검사
+      if (!newWorkspace || !newWorkspace.trim()) {
+        return;
+      }
+      if (!newUrl || !newUrl.trim()) {
+        return;
+      }
+      axios
+        .post(
+          'http://localhost:3095/api/workspaces',
+          {
+            workspace: newWorkspace,
+            url: newUrl,
+          },
+          { withCredentials: true },
+        )
+        .then((response) => {
+          revalidate();
+          setShowCreateWorkspaceModal(false);
+          setNewWorkspace('');
+          setNewUrl('');
+        })
+        .catch((error) => {
+          console.log('error');
+          console.dir(error);
+          toast.configure();
+          toast.error(error.response?.data, { position: 'bottom-center' });
+        });
+    },
+    [newWorkspace, newUrl],
+  );
 
   //모달창 닫기
   const onCloseModal = useCallback(() => {
@@ -95,7 +133,7 @@ const Workspace: FC = ({ children }) => {
       </Header>
       <WorkspaceWrapper>
         <Workspaces>
-          {userData?.Workspaces.map((ws) => {
+          {userData.Workspaces?.map((ws) => {
             return (
               <Link key={ws.id} to={`/workspace/${123}/channel/일반`}>
                 <WorkspaceButton>{ws.name.slice(0, 1).toUpperCase()}</WorkspaceButton>
