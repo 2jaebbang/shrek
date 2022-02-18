@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { VFC, useCallback, useState } from 'react';
-import { Navigate, Route, Routes } from 'react-router';
+import { Navigate, Route, Routes, useParams } from 'react-router';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import useSWR from 'swr';
@@ -25,7 +25,7 @@ import gravatar from 'gravatar';
 import loadable from '@loadable/component';
 import Menu from 'components/Menu';
 import { Link } from 'react-router-dom';
-import { IUser } from 'types/db';
+import { IChannel, IUser } from 'types/db';
 import Modal from 'components/Modal';
 import { Button, Input, Label } from 'pages/SignUp/styles';
 import useInput from 'hooks/useInput';
@@ -42,12 +42,20 @@ const Workspace: VFC = () => {
   const [showWorkspaceModal, setShowWorkspaceModal] = useState(false);
   const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
 
+  const params = useParams<{ workspace?: string }>();
+  const { workspace } = params;
+
   const {
     data: userData,
     error,
     revalidate,
     mutate,
   } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher, { dedupingInterval: 2000 });
+
+  const { data: channelData } = useSWR<IChannel[]>(
+    userData ? `http://localhost:3095/api/workspaces/${workspace}/channels` : null,
+    fetcher,
+  );
 
   const onLogout = useCallback(() => {
     axios.post('http://localhost:3095/api/users/logout', null, { withCredentials: true }).then(() => {
@@ -168,11 +176,14 @@ const Workspace: VFC = () => {
                 </WorkspaceModal>
               </Menu>
             )}
+            {channelData?.map((v) => (
+              <div>{v.name}</div>
+            ))}
           </MenuScroll>
         </Channels>
         <Chats>
           <Routes>
-            <Route path="/channel" element={<Channel />}></Route>
+            <Route path="/channel/:channel" element={<Channel />}></Route>
             <Route path="/dm/:id" element={<DirectMessage />}></Route>
           </Routes>
         </Chats>
