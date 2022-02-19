@@ -24,10 +24,10 @@ const CreateChannelModal: FC<Props> = ({ show, onCloseModal, setShowCreateChanne
     error,
     revalidate,
     mutate,
-  } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher, { dedupingInterval: 2000 });
+  } = useSWR<IUser | false>('api/users', fetcher, { dedupingInterval: 2000 });
 
   const { data: channelData, revalidate: revalidateChannel } = useSWR<IChannel[]>(
-    userData ? `http://localhost:3095/api/workspaces/${workspace}/channels` : null,
+    userData ? `/workspaces/${workspace}/channels` : null,
     fetcher,
   );
 
@@ -39,7 +39,7 @@ const CreateChannelModal: FC<Props> = ({ show, onCloseModal, setShowCreateChanne
       }
       axios
         .post(
-          `http://localhost:3095/api/workspaces/${workspace}/channels`,
+          `/workspaces/${workspace}/channels`,
           {
             name: newChannel,
           },
