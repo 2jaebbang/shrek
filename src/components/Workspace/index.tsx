@@ -32,6 +32,7 @@ import useInput from 'hooks/useInput';
 import CreateChannelModal from 'components/CreateChannelModal';
 import InviteWorkspaceModal from 'components/InviteWorkspaceModal';
 import InviteChannelModal from 'components/InviteChannelModal';
+import DMList from 'components/DMList';
 
 const Channel = loadable(() => import('pages/Channel'));
 const DirectMessage = loadable(() => import('pages/DirectMessage'));
@@ -187,6 +188,7 @@ const Workspace: VFC = () => {
                 </WorkspaceModal>
               </Menu>
             )}
+            <DMList />
             {channelData?.map((v) => (
               <div>{v.name}</div>
             ))}
