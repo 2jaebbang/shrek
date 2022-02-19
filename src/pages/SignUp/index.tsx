@@ -37,7 +37,7 @@ const SignUp = () => {
         setSignUpError('');
         setSignUpSuccess(false);
         axios
-          .post('http://localhost:3095/api/users', {
+          .post('/users', {
             email,
             nickname,
             password,
@@ -63,7 +63,7 @@ const SignUp = () => {
 
   //데이터가 있을경우 (로그인했을 경우) workspace/channel로 이동
   if (data) {
-    return <Navigate replace to="/workspace/channel" />;
+    return <Navigate replace to="/workspace/sleact/channel/일반" />;
   }
 
   return (

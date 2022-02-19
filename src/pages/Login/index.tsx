@@ -10,7 +10,7 @@ const LogIn = () => {
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
   const [logInError, setLogInError] = useState(false);
-  const { data, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher, { dedupingInterval: 10000 });
+  const { data, error, mutate } = useSWR('/users', fetcher, { dedupingInterval: 10000 });
 
   const onSubmit = useCallback(
     (e) => {
@@ -18,7 +18,7 @@ const LogIn = () => {
       setLogInError(false);
       axios
         .post(
-          'http://localhost:3095/api/users/login',
+          '/users/login',
           {
             email,
             password,
@@ -41,7 +41,7 @@ const LogIn = () => {
 
   //데이터가 있을경우 (로그인했을 경우) workspace/channel로 이동
   if (data) {
-    return <Navigate replace to="/workspace/channel" />;
+    return <Navigate replace to="/workspace/sleact/channel/일반" />;
   }
 
   return (
